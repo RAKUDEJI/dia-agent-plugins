@@ -1,0 +1,13 @@
+{
+  "name": "dia",
+  "version": "0.1.0-next.0",
+  "description": "Create, validate, render, and visually refine diagrams with the dia TSX DSL and CLI.",
+  "author": {
+    "name": "RAKUDEJI",
+    "url": "https://github.com/RAKUDEJI"
+  },
+  "homepage": "https://github.com/RAKUDEJI/dia-agent-plugins",
+  "repository": "https://github.com/RAKUDEJI/dia-agent-plugins",
+  "license": "MIT",
+  "keywords": ["diagram", "diagram-as-code", "tsx", "svg", "architecture"]
+}

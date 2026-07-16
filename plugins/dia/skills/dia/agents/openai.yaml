@@ -1,0 +1,4 @@
+interface:
+  display_name: "dia Diagram as Code"
+  short_description: "Create and refine beautiful diagrams with dia"
+  default_prompt: "Use $dia to create and render a clear architecture diagram."

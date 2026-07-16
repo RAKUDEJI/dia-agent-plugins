@@ -1,0 +1,23 @@
+{
+  "name": "rakudeji",
+  "owner": {
+    "name": "RAKUDEJI"
+  },
+  "description": "Official RAKUDEJI plugins for authoring and refining diagrams with dia.",
+  "plugins": [
+    {
+      "name": "dia",
+      "source": "./plugins/dia",
+      "description": "Create, validate, render, and visually refine diagrams with the dia TSX DSL and CLI.",
+      "version": "0.1.0-next.0",
+      "author": {
+        "name": "RAKUDEJI"
+      },
+      "homepage": "https://github.com/RAKUDEJI/dia-agent-plugins",
+      "repository": "https://github.com/RAKUDEJI/dia-agent-plugins",
+      "license": "MIT",
+      "keywords": ["diagram", "diagram-as-code", "tsx", "svg", "architecture"],
+      "category": "development"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "dia",
+  "version": "0.1.0-next.0",
+  "description": "Create, validate, render, and visually refine diagrams with the dia TSX DSL and CLI.",
+  "author": {
+    "name": "RAKUDEJI",
+    "url": "https://github.com/RAKUDEJI"
+  },
+  "homepage": "https://github.com/RAKUDEJI/dia-agent-plugins",
+  "repository": "https://github.com/RAKUDEJI/dia-agent-plugins",
+  "license": "MIT",
+  "keywords": ["diagram", "diagram-as-code", "tsx", "svg", "architecture"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "dia Diagram as Code",
+    "shortDescription": "Create beautiful diagrams from semantic TSX",
+    "longDescription": "Author semantic dia models, reusable symmetric components, views, and styles; validate them with LLM-oriented diagnostics; render SVG; and iterate through visual inspection.",
+    "developerName": "RAKUDEJI",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/RAKUDEJI/dia-agent-plugins",
+    "defaultPrompt": [
+      "Create a clear architecture diagram with dia.",
+      "Improve this dia diagram while preserving its semantics.",
+      "Diagnose and repair this dia TSX project."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
