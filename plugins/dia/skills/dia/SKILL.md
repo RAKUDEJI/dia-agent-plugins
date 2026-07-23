@@ -1,38 +1,40 @@
 ---
 name: dia
-description: Create, edit, validate, render, and visually refine Diagram as Code projects with the dia CLI and @rakudeji/dia TSX DSL. Use for architecture diagrams, flows, topology maps, semantic model/view/style authoring, reusable symmetric components, .dia.tsx files, dia JSON files, SVG generation, and dia diagnostic repair.
+description: Create, edit, validate, render, inspect, and visually refine Diagram as Code projects with the dia CLI and @rakudeji/dia TSX DSL. Use for architecture diagrams, flows, topology maps, multi-diagram projects, reusable symmetric components, semantic Model/View/Style authoring, .dia.tsx or dia JSON files, SVG or PNG generation, visual lint, geometry inspection, and dia diagnostic repair.
 ---
 
 # dia
 
-Build diagrams through dia's semantic TSX workflow. Prefer semantic entities and relations plus a separate view and style. Keep direct JSON available for existing files or explicit requests.
+Build diagrams through dia's semantic TSX workflow. Prefer semantic entities and relations plus a separate View and Style. Treat a project as a named collection of diagrams that can share components, View, and Style. Keep Direct JSON available for existing files or explicit requests.
 
 ## Work safely
 
 - Preserve unrelated files and user-authored choices.
-- Use the project's installed `dia` version when `@rakudeji/dia` is already present.
+- Use the project's installed `dia` version when `@rakudeji/dia` is already present. Run `dia --version` when behavior may depend on the installed prerelease.
 - Do not require a global installation. Use `pnpm exec dia` inside a project and `pnpm dlx @rakudeji/dia@next` only for bootstrapping.
 - Treat diagnostics as the contract. Do not produce or claim a valid SVG after a failed validation or render.
 - Keep model semantics independent from visual workarounds. Put presentation decisions in View or Style.
+- Do not send TSX to HTTP or MCP surfaces. TSX is trusted local code evaluated by the CLI.
 
 ## Choose the workflow
 
-1. Inspect the target directory for `package.json`, `package.json#dia.entry`, `*.dia.tsx`, model/view/style JSON, and existing SVG outputs.
+1. Inspect the target directory for `package.json#dia`, `dia.default`, `dia.diagrams`, `dia.outDir`, `diagrams/*.dia.tsx`, shared components, View/Style modules, JSON documents, and existing outputs.
 2. For a new project, read [CLI workflow](references/cli.md), then initialize the TSX template.
 3. For TSX authoring or visual refinement, read [TSX authoring and visual quality](references/tsx-authoring.md).
 4. For an existing direct JSON diagram, preserve that syntax unless the user asks to migrate it.
+5. For a single quick diagram outside a project, render the `.dia.tsx` path directly instead of creating scaffolding.
 
 ## Create or edit
 
 For a new project, run from the intended parent directory:
 
 ```sh
-pnpm dlx @rakudeji/dia@next init <project-name> --template tsx --diagnostics llm
+pnpm dlx @rakudeji/dia@next init <project-name> --diagnostics llm
 cd <project-name>
 pnpm install
 ```
 
-Start from the generated files rather than reconstructing the API from memory. The template establishes the supported TypeScript, JSX, View, Style, component, and entrypoint contracts.
+Start from the generated files rather than reconstructing the API from memory. The template establishes the supported TypeScript, JSX, View, Style, component, multi-entry, and output contracts. Add a named entry with `pnpm exec dia add <kebab-name>`.
 
 When editing:
 
@@ -48,22 +50,32 @@ Run the full loop after meaningful changes:
 
 ```sh
 pnpm check
-pnpm exec dia validate --diagnostics llm
-pnpm exec dia render
+pnpm exec dia validate --all --diagnostics llm
+pnpm exec dia render --all
+pnpm exec dia lint --all --diagnostics llm
 ```
 
-If validation fails, follow JSON Pointers, related locations, and suggestions; fix the source rather than suppressing the diagnostic. Re-run validation before rendering.
+For one diagram, replace `--all` with its registered name or source path. If validation fails, follow JSON Pointers, related locations, and suggestions; fix the source rather than suppressing the diagnostic. Re-run validation before rendering.
 
 When icons are used and reproducibility matters:
 
 ```sh
-pnpm exec dia icons sync -o icons.lock.json --diagnostics llm
+pnpm exec dia icons sync --all --diagnostics llm
 pnpm exec dia render --icons-lock icons.lock.json --frozen-icons
+```
+
+Use the built-in inspection outputs when the geometry needs diagnosis:
+
+```sh
+pnpm exec dia render <name> --format png
+pnpm exec dia render <name> --geometry geometry.json
+pnpm exec dia lint <name> --diagnostics llm
+pnpm exec dia up
 ```
 
 ## Judge the result
 
-Inspect the rendered SVG, not only the exit code. Iterate until the visual hierarchy and flows are clear.
+Inspect the rendered SVG or PNG, not only the exit code. Use visual lint for objective defects, geometry JSON for machine-readable coordinates, and human visual judgment for symmetry and semantic legibility. Iterate until the visual hierarchy and flows are clear.
 
 Prioritize:
 
@@ -79,6 +91,6 @@ Crossings alone are not a failure. Prefer coherent, predictable routing over irr
 
 ## Finish
 
-- Leave the editable source and deterministic SVG output in the project.
-- Report the entrypoint, output path, validation commands, and any remaining aesthetic tradeoffs.
+- Leave the editable sources and deterministic outputs in the project.
+- Report the diagram names, default entry, output paths, validation commands, and any remaining aesthetic tradeoffs.
 - Do not claim visual improvement without inspecting the current SVG.

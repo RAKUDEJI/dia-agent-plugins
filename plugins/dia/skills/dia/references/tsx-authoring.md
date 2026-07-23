@@ -4,12 +4,13 @@
 
 Use the generated TSX project as the current API reference. Its default structure is:
 
-- `diagram.dia.tsx`: one `defineDiagram` entrypoint;
-- `components/*.tsx`: reusable semantic components;
-- `view.tsx`: one `defineView` projection;
-- `style.ts`: one `defineStyle` definition;
-- `package.json#dia.entry`: selected entrypoint;
-- `package.json#dia.output`: deterministic SVG destination.
+- `diagrams/*.dia.tsx`: one `defineDiagram` entrypoint per named diagram;
+- `components/*.tsx`: reusable semantic components shared across entries;
+- `view.tsx`: a shared `defineView` projection;
+- `style.ts`: a shared `defineStyle` definition;
+- `package.json#dia.diagrams`: stable names mapped to entrypoints;
+- `package.json#dia.default`: entry selected when no name is given;
+- `package.json#dia.outDir`: deterministic artifact directory.
 
 Keep each concern in its layer:
 
@@ -36,6 +37,8 @@ For repeated systems such as workers, availability zones, pipeline stages, or mi
 6. Change data through props; do not fork the geometry by copying the component.
 
 Strict replication should expose meaningful structural differences. If units are intentionally different, use a non-strict mode or separate components rather than weakening the invariant silently.
+
+Reuse components across diagrams when the same semantic unit appears in overview, detail, and flow views. Keep each `.dia.tsx` entry small: compose shared components and select the View/Style needed for that diagram.
 
 ## Relations and routing
 
@@ -88,7 +91,7 @@ const SystemNode = defineComponent<SystemNodeProps>(
 
 ## Visual review
 
-Render and inspect at the intended viewing size. If the available viewer cannot open SVG directly, rasterize a temporary preview with an available converter such as `rsvg-convert`; keep SVG as the real output. Check the whole canvas first, then dense regions.
+Render and inspect at the intended viewing size. Use `dia render <name> --format png` when a raster preview is easier to inspect; keep SVG as the default editable vector output. Run `dia lint <name> --diagnostics llm` before visual review, and use `--geometry geometry.json` when an agent needs exact coordinates. Check the whole canvas first, then dense regions.
 
 ### Whole canvas
 

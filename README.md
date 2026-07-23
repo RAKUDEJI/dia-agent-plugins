@@ -2,7 +2,7 @@
 
 Official RAKUDEJI agent skill for authoring and refining diagrams with [`@rakudeji/dia`](https://www.npmjs.com/package/@rakudeji/dia).
 
-The same Agent Skill is packaged for Codex and Claude Code. It guides an agent through semantic TSX authoring, reusable symmetric components, View and Style separation, LLM-oriented diagnostics, deterministic SVG rendering, and visual refinement.
+The same Agent Skill is packaged for Codex and Claude Code. It guides an agent through semantic TSX authoring, reusable symmetric components, multi-diagram projects, View and Style separation, LLM-oriented diagnostics, visual lint, geometry inspection, deterministic SVG/PNG rendering, and visual refinement.
 
 ## Codex
 
@@ -32,7 +32,7 @@ Invoke `/dia:dia`, or ask Claude to create or improve a diagram with dia.
 The skill does not require a global CLI. New projects can be initialized with:
 
 ```sh
-pnpm dlx @rakudeji/dia@next init my-diagram --template tsx --diagnostics llm
+pnpm dlx @rakudeji/dia@next init my-diagrams --diagnostics llm
 ```
 
 Initialized projects install `@rakudeji/dia` locally and use `pnpm exec dia` or the generated package scripts.
