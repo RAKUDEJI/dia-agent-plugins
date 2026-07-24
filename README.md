@@ -4,6 +4,10 @@ Official RAKUDEJI agent skill for authoring and refining diagrams with [`@rakude
 
 The same Agent Skill and hosted dia MCP connection are packaged for Codex and Claude Code. They guide an agent through semantic TSX authoring, reusable symmetric components, multi-diagram projects, View and Style separation, LLM-oriented diagnostics, deterministic SVG rendering through the remote sandbox, local SVG/PNG rendering, visual lint, geometry inspection, and visual refinement.
 
+The Codex-facing product boundary, remote/local workflow selection, security
+model, compatibility policy, and release gates are defined in
+[`docs/CodexPluginDesign.md`](docs/CodexPluginDesign.md).
+
 ## Codex
 
 Add the marketplace and install the plugin:
