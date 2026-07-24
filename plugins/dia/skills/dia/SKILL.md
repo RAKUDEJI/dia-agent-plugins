@@ -1,6 +1,6 @@
 ---
 name: dia
-description: Create, edit, validate, render, inspect, and visually refine Diagram as Code projects with the dia CLI and @rakudeji/dia TSX DSL. Use for architecture diagrams, flows, topology maps, multi-diagram projects, reusable symmetric components, semantic Model/View/Style authoring, .dia.tsx or dia JSON files, SVG or PNG generation, visual lint, geometry inspection, and dia diagnostic repair.
+description: Create, edit, validate, render, inspect, and visually refine Diagram as Code with the hosted dia MCP, dia CLI, and @rakudeji/dia TSX DSL. Use for quick stateless diagrams, architecture diagrams, flows, topology maps, multi-diagram projects, reusable symmetric components, semantic Model/View/Style authoring, .dia.tsx or dia JSON files, SVG or PNG generation, visual lint, geometry inspection, and dia diagnostic repair.
 ---
 
 # dia
@@ -14,15 +14,39 @@ Build diagrams through dia's semantic TSX workflow. Prefer semantic entities and
 - Do not require a global installation. Use `pnpm exec dia` inside a project and `pnpm dlx @rakudeji/dia@next` only for bootstrapping.
 - Treat diagnostics as the contract. Do not produce or claim a valid SVG after a failed validation or render.
 - Keep model semantics independent from visual workarounds. Put presentation decisions in View or Style.
-- Do not send TSX to HTTP or MCP surfaces. TSX is trusted local code evaluated by the CLI.
+- Distinguish trusted local TSX from portable remote TSX. Local CLI code may use the installed project environment; remote MCP code must stay within the server's closed import and runtime policy.
+- Never put secrets, credentials, environment values, private source code, or unrelated local files into a remote TSX project.
 
 ## Choose the workflow
 
 1. Inspect the target directory for `package.json#dia`, `dia.default`, `dia.diagrams`, `dia.outDir`, `diagrams/*.dia.tsx`, shared components, View/Style modules, JSON documents, and existing outputs.
-2. For a new project, read [CLI workflow](references/cli.md), then initialize the TSX template.
-3. For TSX authoring or visual refinement, read [TSX authoring and visual quality](references/tsx-authoring.md).
-4. For an existing direct JSON diagram, preserve that syntax unless the user asks to migrate it.
-5. For a single quick diagram outside a project, render the `.dia.tsx` path directly instead of creating scaffolding.
+2. For a quick diagram that does not need a local project, installed dependency, PNG, geometry JSON, or local Vite integration, read [Remote MCP workflow](references/remote-mcp.md) and use `validate_tsx` followed by `render_tsx`.
+3. For a new or existing local project, read [CLI workflow](references/cli.md).
+4. For TSX authoring or visual refinement, read [TSX authoring and visual quality](references/tsx-authoring.md).
+5. For an existing direct JSON diagram, preserve that syntax unless the user asks to migrate it. Use the MCP JSON tools when no local artifact is needed, or the CLI when editing project files.
+6. For a trusted standalone `.dia.tsx` file that already exists locally, render the path directly with the CLI instead of creating scaffolding.
+
+## Use the hosted MCP
+
+Prefer the hosted MCP when an LLM needs to create or revise a small self-contained diagram without preparing a project. The plugin connects `https://dia.sdweb.workers.dev/mcp`.
+
+Use this loop:
+
+1. Build one `{ version: 1, entry, files }` in-memory project.
+2. Call `validate_tsx`.
+3. Repair every error using its stable code, path, source location, and suggestions.
+4. Call `render_tsx` only after validation succeeds.
+5. Inspect the returned SVG before claiming visual quality.
+
+Remote TSX supports `@rakudeji/dia`, relative `.ts` / `.tsx` modules, `iconify:<prefix>/<name>`, and relative `.svg?dia-icon` assets. It intentionally excludes arbitrary npm packages, Node.js, Vite configuration and plugins, type checking, project persistence, local filesystem or environment access, outbound network, and PNG/PDF/HTML output.
+
+Use JSON tools instead when TSX composition is unnecessary:
+
+- `validate_diagram`
+- `render_diagram`
+- `format_diagram`
+- `apply_diagram_fixes`
+- `render_diagrams`
 
 ## Create or edit
 
@@ -91,6 +115,6 @@ Crossings alone are not a failure. Prefer coherent, predictable routing over irr
 
 ## Finish
 
-- Leave the editable sources and deterministic outputs in the project.
+- For local work, leave the editable sources and deterministic outputs in the project. For remote-only work, return or save the authored in-memory source when the user needs reproducibility; do not imply that the server persisted it.
 - Report the diagram names, default entry, output paths, validation commands, and any remaining aesthetic tradeoffs.
 - Do not claim visual improvement without inspecting the current SVG.

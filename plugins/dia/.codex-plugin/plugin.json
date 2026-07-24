@@ -1,7 +1,7 @@
 {
   "name": "dia",
-  "version": "0.1.0-next.3",
-  "description": "Create, validate, render, inspect, and visually refine multi-diagram projects with the dia TSX DSL and CLI.",
+  "version": "0.1.0-next.4",
+  "description": "Create, validate, render, inspect, and visually refine diagrams with the dia CLI or isolated remote TSX MCP.",
   "author": {
     "name": "RAKUDEJI",
     "url": "https://github.com/RAKUDEJI"
@@ -9,12 +9,13 @@
   "homepage": "https://github.com/RAKUDEJI/dia-agent-plugins",
   "repository": "https://github.com/RAKUDEJI/dia-agent-plugins",
   "license": "MIT",
-  "keywords": ["diagram", "diagram-as-code", "tsx", "svg", "architecture"],
+  "keywords": ["diagram", "diagram-as-code", "tsx", "svg", "mcp", "architecture"],
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "dia Diagram as Code",
     "shortDescription": "Create beautiful diagrams from semantic TSX",
-    "longDescription": "Author semantic dia models, reusable symmetric components, views, and styles; manage multi-diagram projects; validate with LLM-oriented diagnostics and visual lint; render SVG or PNG; and iterate through visual inspection.",
+    "longDescription": "Author semantic dia models, reusable symmetric components, views, and styles; render quick diagrams through isolated remote TSX or manage full local projects with the CLI; and iterate with LLM-oriented diagnostics and visual inspection.",
     "developerName": "RAKUDEJI",
     "category": "Developer Tools",
     "capabilities": ["Read", "Write"],

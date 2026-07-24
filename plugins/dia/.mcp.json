@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "dia": {
+      "type": "http",
+      "url": "https://dia.sdweb.workers.dev/mcp",
+      "note": "Official stateless dia MCP. Provides deterministic JSON diagram tools and isolated portable TSX validation/rendering. Remote TSX cannot access arbitrary npm packages, Node.js, Vite configuration, local files, secrets, or outbound network."
+    }
+  }
+}

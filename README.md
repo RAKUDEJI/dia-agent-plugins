@@ -2,7 +2,7 @@
 
 Official RAKUDEJI agent skill for authoring and refining diagrams with [`@rakudeji/dia`](https://www.npmjs.com/package/@rakudeji/dia).
 
-The same Agent Skill is packaged for Codex and Claude Code. It guides an agent through semantic TSX authoring, reusable symmetric components, multi-diagram projects, View and Style separation, LLM-oriented diagnostics, visual lint, geometry inspection, deterministic SVG/PNG rendering, and visual refinement.
+The same Agent Skill and hosted dia MCP connection are packaged for Codex and Claude Code. They guide an agent through semantic TSX authoring, reusable symmetric components, multi-diagram projects, View and Style separation, LLM-oriented diagnostics, deterministic SVG rendering through the remote sandbox, local SVG/PNG rendering, visual lint, geometry inspection, and visual refinement.
 
 ## Codex
 
@@ -15,6 +15,8 @@ codex plugin add dia@rakudeji
 
 Start a new task and invoke `$dia`, or ask Codex to create or improve a diagram with dia.
 
+The plugin connects `https://dia.sdweb.workers.dev/mcp`. Codex can use `validate_tsx` and `render_tsx` for a quick stateless diagram without installing the CLI or creating a project.
+
 ## Claude Code
 
 Add the marketplace and install the plugin inside Claude Code:
@@ -26,6 +28,8 @@ Add the marketplace and install the plugin inside Claude Code:
 ```
 
 Invoke `/dia:dia`, or ask Claude to create or improve a diagram with dia.
+
+The plugin-level `.mcp.json` connects the same hosted dia MCP.
 
 ## CLI installation
 
@@ -44,6 +48,7 @@ Initialized projects install `@rakudeji/dia` locally and use `pnpm exec dia` or 
 .claude-plugin/marketplace.json       Claude Code marketplace
 plugins/dia/.codex-plugin/plugin.json Codex manifest
 plugins/dia/.claude-plugin/plugin.json Claude Code manifest
+plugins/dia/.mcp.json                  Hosted dia MCP connection
 plugins/dia/skills/dia/SKILL.md        Shared Agent Skill
 ```
 
