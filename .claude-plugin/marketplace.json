@@ -8,8 +8,8 @@
     {
       "name": "dia",
       "source": "./plugins/dia",
-      "description": "Create, validate, render, inspect, and visually refine diagrams with the dia CLI or isolated remote TSX MCP.",
-      "version": "0.1.0-next.4",
+      "description": "Create, validate, render, lint, inspect, and visually refine diagrams with the dia CLI or isolated remote TSX MCP.",
+      "version": "0.1.0-next.5",
       "author": {
         "name": "RAKUDEJI"
       },

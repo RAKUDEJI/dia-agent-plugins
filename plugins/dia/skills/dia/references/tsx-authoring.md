@@ -17,11 +17,11 @@ Keep each concern in its layer:
 | Concern | Put it in |
 | --- | --- |
 | What exists | Model entities and relations |
-| Repeated semantic unit | `defineComponent` |
-| Semantic equivalence across instances | strict `ReplicaSet` |
-| What is visible and how it projects | View rules |
+| Repeated semantic unit | ordinary TypeScript function returning Model facts |
+| Visual equivalence across instances | View `replicate` slots |
+| What is visible and which visual variant it selects | View rules |
 | Layout intent, roles, arrows, ports | View |
-| Density, typography, strokes, canvas | Style |
+| Icons, density, typography, strokes, canvas | Style |
 
 Do not add view-only properties such as `scope: "loop"` to the semantic model just to select or route an edge. Use View matching and layout intent.
 
@@ -29,16 +29,17 @@ Do not add view-only properties such as `scope: "loop"` to the semantic model ju
 
 For repeated systems such as workers, availability zones, pipeline stages, or mirrored services:
 
-1. Author one component with stable slots.
-2. Scope IDs per instance with `idScope`. For example, `idScope("client")("root")` produces `client.root`, which relations can reference.
-3. Make each component root project to a containment group before placing it in a strict `ReplicaSet`; a strict replica root cannot remain a plain entity.
-4. Place instances in a strict `ReplicaSet` when their projected structure must match.
-5. Keep corresponding edges in the same slots and assign consistent roles and ports.
-6. Change data through props; do not fork the geometry by copying the component.
+1. Author one ordinary function that returns `{ entities, relations }`.
+2. Derive stable IDs from one instance string, for example `${instance}.root`.
+3. Flatten each function result into the entry's plain Model data.
+4. In the View rule that emits each repeated root, declare `replicate` with explicit corresponding slot ID lists.
+5. Use `Constrain` for named alignment, order, size, and anchor relationships.
+6. Keep corresponding edges in the same slots and assign consistent roles and ports.
+7. Change data through function arguments; do not fork the geometry by copying the fact builder.
 
-Strict replication should expose meaningful structural differences. If units are intentionally different, use a non-strict mode or separate components rather than weakening the invariant silently.
+Strict replication should expose meaningful structural differences. If units are intentionally different, use a non-strict mode or separate View rules rather than weakening the invariant silently.
 
-Reuse components across diagrams when the same semantic unit appears in overview, detail, and flow views. Keep each `.dia.tsx` entry small: compose shared components and select the View/Style needed for that diagram.
+Reuse fact builders across diagrams when the same semantic unit appears in overview, detail, and flow views. Keep each `.dia.tsx` entry small: compose shared facts and select the View/Style needed for that diagram.
 
 ## Relations and routing
 
@@ -51,34 +52,34 @@ Reuse components across diagrams when the same semantic unit appears in overview
 - Constrain only edges whose attachment side is meaningful. Let ordinary primary flow use automatic attachment unless it needs an explicit contract.
 - Use edge families for genuinely shared long-distance fan-in or fan-out, not every nearby group of edges.
 
-When routing fails, use the diagnostic's obstacle and origin information. For `PORT_ROUTING_UNSATISFIABLE`, reposition the nodes or remove only optional port constraints; never silently fall back to a different side. Adjust semantic ordering, layout intent, spacing, or family membership; do not randomly enlarge nodes.
+When routing fails, use the Problem's obstacle and Site information. For `PORT_ROUTING_UNSATISFIABLE`, reposition the nodes or remove only optional port constraints; never silently fall back to a different side. Adjust semantic ordering, layout intent, spacing, or family membership; do not randomly enlarge nodes.
 
-A reusable top-side feedback port can be authored on the component and selected only by the feedback relation:
+A named top-side feedback port belongs to the View rule that emits the endpoint and is selected only by the matching edge rule:
 
 ```tsx
-interface SystemNodeProps {
-  readonly type: string;
-}
-
-const SystemNode = defineComponent<SystemNodeProps>(
-  {
-    id: "SystemNode",
-    root: "root",
-    ports: { feedback: { slot: "root", side: "top", order: 0 } },
-  },
-  ({ instance, type }) => {
-    const id = idScope(instance);
-    return <Entity slot="root" id={id("root")} type={type} />;
-  },
+const view = defineView(
+  <View>
+    <EntityRule
+      id="systems"
+      match={{ type: "system" }}
+      emit={{
+        as: "entity",
+        label: { property: "label" },
+        ports: { feedback: { side: "top", order: 0 } },
+      }}
+    />
+    <RelationRule
+      id="feedback"
+      match={{ type: "feedback" }}
+      emit={[{
+        as: "edge",
+        role: "feedback",
+        fromPort: "feedback",
+        toPort: "feedback",
+      }]}
+    />
+  </View>,
 );
-
-<Relation
-  type="feedback"
-  from="worker.root"
-  to="api.root"
-  fromPort="feedback"
-  toPort="feedback"
-/>
 ```
 
 ## Labels
@@ -110,4 +111,4 @@ Render and inspect at the intended viewing size. Use `dia render <name> --format
 - Does each label clearly belong to one path?
 - Are icon nodes and rectangular nodes visually balanced?
 
-Do not optimize one numerical score blindly. Symmetry, consistency, and semantic legibility are higher-order judgments; use diagnostics for enforceable contracts and visual inspection for the final decision.
+Do not optimize one numerical score blindly. Symmetry, consistency, and semantic legibility are higher-order judgments; use Problems and Findings for enforceable contracts and visual inspection for the final decision.

@@ -10,7 +10,7 @@ pnpm exec dia --help
 Bootstrap without a global installation:
 
 ```sh
-pnpm dlx @rakudeji/dia@next init my-diagrams --diagnostics llm
+pnpm dlx @rakudeji/dia@latest init my-diagrams --diagnostics llm
 cd my-diagrams
 pnpm install
 ```
@@ -33,7 +33,6 @@ pnpm exec dia add request-flow
 pnpm exec dia validate --all --diagnostics llm
 pnpm exec dia render --all
 pnpm exec dia lint --all --diagnostics llm
-pnpm exec dia up
 ```
 
 Pass a registered name to operate on one diagram:
@@ -49,8 +48,8 @@ pnpm exec dia render request-flow --format png
 Do not create a project merely to render one trusted TSX file:
 
 ```sh
-pnpm dlx @rakudeji/dia@next render diagram.dia.tsx -o diagram.svg
-pnpm dlx @rakudeji/dia@next lint diagram.dia.tsx --diagnostics llm
+pnpm dlx @rakudeji/dia@latest render diagram.dia.tsx -o diagram.svg
+pnpm dlx @rakudeji/dia@latest lint diagram.dia.tsx --diagnostics llm
 ```
 
 The CLI bundles and executes TSX but does not run TypeScript type checking. In a project, run the generated `pnpm check`.
@@ -64,6 +63,9 @@ pnpm exec dia render overview --format png
 
 # Renderer-independent nodes, bounds, edge points, attachments, and labels.
 pnpm exec dia render overview --geometry geometry.json
+
+# On a refused layout contract, write the verified relaxed drawing attached to its Problem.
+pnpm exec dia render overview --explain relaxed.svg --diagnostics llm
 
 # Export only semantic Model facts from TSX.
 pnpm exec dia export model overview -o model.json --diagnostics llm
@@ -85,20 +87,38 @@ For a multi-diagram lock workflow, use `icons sync --all` and follow the project
 
 ## Diagnostics loop
 
-Prefer `--diagnostics llm` when an agent is repairing input. Preserve these behaviors:
+Prefer `--diagnostics llm` when an agent is repairing input. Its envelope separates:
+
+- `problems`: pipeline-stopping failures;
+- `findings`: non-blocking observations, including visual lint;
+- `sites`: ordered locations. The first is primary; later document, source, element, or constraint sites explain provenance;
+- `fix`: an optional atomic JSON Patch operation array on one Problem;
+- `explanation`: an optional verified relaxed rendering attached to the Problem it explains.
+
+Preserve these behaviors:
 
 - success exits `0`;
 - invalid input or render failure exits nonzero;
 - a failed render must not be treated as a partial success;
-- pointers identify the source location;
-- `related` connects derived visual failures back to model or view sources;
+- document Sites carry JSON Pointers, source Sites carry file/line/column, and element Sites match SVG identities;
 - suggestions are guidance, not permission to change the model's meaning.
 
 For `UNMAPPED_ENTITY` or `UNMAPPED_RELATION`, decide whether the item is meant to be visible. Add a matching View rule when it carries meaning; use omit only when exclusion is deliberate. Do not accept an omit suggestion merely to make validation pass.
 
 If an icon cannot be resolved, distinguish a missing icon package or icon set from a bad icon name. Install only the dependency named by the diagnostic, then validate again.
 
-Visual lint reports enforceable geometry defects such as overlapping reciprocal edges, shared attachments, detached labels, and label-obstacle collisions. Treat warnings as repair targets, then inspect the rendered image; lint is not a complete definition of beauty.
+Visual lint returns Findings for enforceable geometry defects such as overlapping reciprocal edges, shared attachments, detached labels, and label-obstacle collisions. Treat Findings as review and repair targets, then inspect the rendered image; lint is not a complete definition of beauty.
+
+## Shared View and Style documents
+
+Network access is explicit and does not occur while rendering. Synchronize a shared HTTPS View or Style into the project lock, then render only from the locked bytes:
+
+```sh
+pnpm exec dia documents sync https://example.com/team.view.json --diagnostics llm
+pnpm exec dia documents check --diagnostics llm
+```
+
+Use `documents sync` to add or refresh a lock and `documents check` to report remote movement without changing the lock.
 
 ## Existing JSON inputs
 

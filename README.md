@@ -2,7 +2,7 @@
 
 Official RAKUDEJI agent skill for authoring and refining diagrams with [`@rakudeji/dia`](https://www.npmjs.com/package/@rakudeji/dia).
 
-The same Agent Skill and hosted dia MCP connection are packaged for Codex and Claude Code. They guide an agent through semantic TSX authoring, reusable symmetric components, multi-diagram projects, View and Style separation, LLM-oriented diagnostics, deterministic SVG rendering through the remote sandbox, local SVG/PNG rendering, visual lint, geometry inspection, and visual refinement.
+The same Agent Skill and hosted dia MCP connection are packaged for Codex and Claude Code. They guide an agent through plain-data Models, reusable fact builders, JSX Views, Styles, multi-diagram projects, Problem/Finding repair, deterministic SVG rendering through the remote sandbox, local SVG/PNG rendering, visual lint, geometry inspection, and visual refinement.
 
 The Codex-facing product boundary, remote/local workflow selection, security
 model, compatibility policy, and release gates are defined in
@@ -19,7 +19,7 @@ codex plugin add dia@rakudeji
 
 Start a new task and invoke `$dia`, or ask Codex to create or improve a diagram with dia.
 
-The plugin connects `https://dia.sdweb.workers.dev/mcp`. Codex can use `validate_tsx` and `render_tsx` for a quick stateless diagram without installing the CLI or creating a project.
+The plugin connects `https://dia.sdweb.workers.dev/mcp`. Codex can use `validate_tsx`, `render_tsx`, and `lint_tsx` for a quick stateless diagram without installing the CLI or creating a project.
 
 ## Claude Code
 
@@ -40,7 +40,7 @@ The plugin-level `.mcp.json` connects the same hosted dia MCP.
 The skill does not require a global CLI. New projects can be initialized with:
 
 ```sh
-pnpm dlx @rakudeji/dia@next init my-diagrams --diagnostics llm
+pnpm dlx @rakudeji/dia@latest init my-diagrams --diagnostics llm
 ```
 
 Initialized projects install `@rakudeji/dia` locally and use `pnpm exec dia` or the generated package scripts.

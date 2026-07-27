@@ -44,11 +44,12 @@ The durable artifact is semantic TSX or public JSON, not Scene IR or generated
 geometry. SVG and PNG are outputs. Internal IR never appears in plugin
 instructions, tool schemas, or user-facing repair suggestions.
 
-### Diagnostics drive repair
+### Problems, Findings, and Sites drive repair
 
-Codex must validate before rendering and repair stable diagnostics at their
-reported source locations. A failed render is not partial success. The plugin
-must not teach Codex to suppress an error by changing the intended meaning.
+Codex must validate before rendering and repair stable Problems at their ordered
+Sites. A Problem stops the pipeline; a Finding never does. A failed render is
+not partial success. The plugin must not teach Codex to suppress a Problem by
+changing the intended meaning.
 
 ### Visual quality requires inspection
 
@@ -78,7 +79,7 @@ runtime, or Cloudflare Worker. It packages:
 | “Improve this `.dia.tsx`” | local CLI | preserve local modules and inspect generated artifacts |
 | “Improve this pasted portable TSX” | hosted TSX tools | all required source is already in the request |
 | “Export PNG / geometry” | local CLI | remote output intentionally supports SVG only |
-| “Show all project diagrams” | local `dia up` | this is the persistent project studio |
+| “Check a shared View or Style” | local `dia documents check` | network movement is inspected without changing the lock |
 
 Codex should ask a question only when the missing choice changes the durable
 artifact. It should not ask whether to use MCP or CLI when the table above
@@ -94,14 +95,15 @@ flowchart TD
   D -->|"Yes"| C["Project-local dia CLI"]
 
   M --> V1["validate_tsx or validate_diagram"]
-  V1 --> R1["Repair diagnostics"]
+  V1 --> R1["Repair Problems at Sites"]
   R1 --> O1["render_tsx or render_diagram"]
-  O1 --> A["MCP preview app"]
+  O1 --> L1["lint_tsx or lint_diagram"]
+  L1 --> A["MCP preview app"]
 
   C --> V2["pnpm check + dia validate"]
-  V2 --> R2["Repair source"]
+  V2 --> R2["Repair Problems at Sites"]
   R2 --> O2["dia render + dia lint"]
-  O2 --> P["SVG / PNG / geometry / dia up"]
+  O2 --> P["SVG / PNG / geometry / explanation"]
 
   A --> J["Visual inspection"]
   P --> J
@@ -111,10 +113,11 @@ flowchart TD
 
 The hosted and local paths converge on the same authoring concepts:
 
-- Model describes entities, relations, and properties;
-- View projects meaning into visual roles and layout intent;
+- Model is plain entity, relation, and property data;
+- ordinary TypeScript functions reuse Model facts;
+- a JSX View projects meaning into visual roles, replication, and layout intent;
 - Style defines the visual language;
-- reusable components and strict replicas express structural symmetry.
+- View `replicate` slots and `Constrain` express structural symmetry.
 
 ## 5. Plugin package
 
@@ -215,14 +218,14 @@ The preview app is the result-inspection surface for a single remote render. It
 may:
 
 - display the SVG;
-- display diagnostics;
+- display Problems and Findings with their Sites;
 - show canonical public JSON;
 - request currently offered fixes;
 - format JSON;
 - download the SVG.
 
 It is not a full source editor or project browser. Persistent multi-diagram
-editing belongs to `dia up`.
+editing belongs to the local project and its project-local CLI.
 
 The resource must keep:
 
@@ -254,6 +257,7 @@ The Codex Plugin depends on these public tools:
 
 - `validate_tsx`
 - `render_tsx`
+- `lint_tsx`
 
 These are the default for new stateless diagrams because they preserve
 components, View, Style, and future authoring growth.
@@ -262,6 +266,7 @@ components, View, Style, and future authoring growth.
 
 - `validate_diagram`
 - `render_diagram`
+- `lint_diagram`
 - `render_diagrams`
 - `format_diagram`
 - `apply_diagram_fixes`
@@ -275,8 +280,11 @@ Every release must preserve:
 
 - explicit JSON Schema types for every argument;
 - correct read-only and idempotency annotations;
-- stable diagnostic code, document, path, related locations, suggestions, and
-  optional JSON Patch fix;
+- stable Problem/Finding code and ordered Sites;
+- document Sites with JSON Pointers, source Sites with file/line/column, and
+  element/constraint Sites that reconcile with the drawing;
+- optional suggestions and an atomic JSON Patch `fix` array on a Problem;
+- optional verified relaxed rendering nested in the Problem it explains;
 - no generated SVG on failure;
 - no internal IR in structured output;
 - a linked preview resource for render tools;
@@ -334,9 +342,9 @@ accepted inputs remain compatible. A breaking MCP change requires:
 3. a plugin version bump;
 4. prompt and live-MCP regression tests.
 
-During prerelease, the skill may bootstrap `@rakudeji/dia@next`. A stable plugin
-should use `@latest` or an explicitly documented compatible range. Existing
-projects always use their installed version.
+The skill bootstraps with `@rakudeji/dia@latest`. Existing projects always use
+their installed version. The plugin version remains independent from both the
+npm package version and the DSL version.
 
 ## 10. Codex UX
 
@@ -370,7 +378,8 @@ After local work, Codex reports:
 
 ### Error experience
 
-The desired experience is “finish from diagnostics without reading docs.”
+The desired experience is “finish from Problems and Findings without reading
+docs.”
 
 An error should therefore answer:
 
@@ -381,7 +390,7 @@ An error should therefore answer:
 5. an exact fix when the correction is mechanical.
 
 Raw compiler stacks, bundler implementation details, and internal IR names must
-not replace public diagnostics.
+not replace public Problems, Findings, and Sites.
 
 ## 11. Validation and release gates
 
@@ -404,7 +413,7 @@ A plugin release is blocked unless all gates pass.
 - `resources/read` exposes the preview with a unique UI domain and valid CSP;
 - minimal JSON validation and render pass;
 - minimal portable TSX validation and render pass;
-- unsupported import and unknown JSX prop diagnostics remain educational;
+- unsupported import and unknown JSX prop Problems remain educational;
 - failure returns no partial SVG.
 
 ### Workflow evaluations
@@ -464,8 +473,10 @@ Keep the current thin package and add:
 - One dia skill controls remote, local, and review workflows.
 - Remote TSX is the preferred stateless authoring route.
 - JSON remains supported for compatibility and simple inputs.
-- The MCP preview is a single-result inspection app, not `dia up`.
-- `dia up` remains the local multi-diagram studio.
+- The MCP preview is a single-result inspection app, not a persistent project
+  browser.
+- Persistent multi-diagram work remains a local CLI workflow.
 - Public directory submission is separate from Git marketplace distribution.
 - Plugin, npm package, and DSL versions remain independent.
-- Beauty is judged by visual inspection after enforceable diagnostics pass.
+- Beauty is judged by visual inspection after Problems are resolved and
+  Findings are reviewed.

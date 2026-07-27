@@ -1,7 +1,7 @@
 {
   "name": "dia",
-  "version": "0.1.0-next.4",
-  "description": "Create, validate, render, inspect, and visually refine diagrams with the dia CLI or isolated remote TSX MCP.",
+  "version": "0.1.0-next.5",
+  "description": "Create, validate, render, lint, inspect, and visually refine diagrams with the dia CLI or isolated remote TSX MCP.",
   "author": {
     "name": "RAKUDEJI",
     "url": "https://github.com/RAKUDEJI"
@@ -15,7 +15,7 @@
   "interface": {
     "displayName": "dia Diagram as Code",
     "shortDescription": "Create beautiful diagrams from semantic TSX",
-    "longDescription": "Author semantic dia models, reusable symmetric components, views, and styles; render quick diagrams through isolated remote TSX or manage full local projects with the CLI; and iterate with LLM-oriented diagnostics and visual inspection.",
+    "longDescription": "Author plain-data dia Models, reusable fact builders, JSX Views, and Styles; render and lint quick diagrams through isolated remote TSX or manage full local projects with the CLI; and repair Problems at precise Sites before visual inspection.",
     "developerName": "RAKUDEJI",
     "category": "Developer Tools",
     "capabilities": ["Read", "Write"],

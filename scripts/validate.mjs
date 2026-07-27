@@ -48,9 +48,20 @@ assert(
   "dia MCP must use the production HTTPS endpoint",
 );
 assert(
-  skill.includes("validate_tsx") && skill.includes("render_tsx"),
-  "SKILL.md must explain the portable Remote TSX workflow",
+  skill.includes("validate_tsx") && skill.includes("render_tsx") && skill.includes("lint_tsx"),
+  "SKILL.md must explain the portable Remote TSX validate, render, and lint workflow",
 );
+assert(
+  skill.includes("problems") && skill.includes("findings") && skill.includes("sites"),
+  "SKILL.md must explain the current Problem, Finding, and Site contract",
+);
+assert(
+  skill.includes("plain `{ entities, relations }` data"),
+  "SKILL.md must explain that the current Model authoring surface is plain data",
+);
+for (const removed of ["defineComponent", "idScope", "ReplicaSet", "dia up", "@rakudeji/dia@next"]) {
+  assert(!skill.includes(removed), `SKILL.md still names removed or superseded workflow '${removed}'`);
+}
 
 await Promise.all([
   access(resolve(root, "plugins/dia/skills/dia/references/cli.md")),

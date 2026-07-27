@@ -1,4 +1,4 @@
 interface:
   display_name: "dia Diagram as Code"
-  short_description: "Create diagrams through remote MCP or the local dia CLI"
-  default_prompt: "Use $dia to create and render a clear diagram with the appropriate remote or local workflow."
+  short_description: "Create and refine semantic diagrams with dia"
+  default_prompt: "Use $dia to create, validate, render, lint, and visually inspect a clear diagram with the appropriate remote or local workflow."
