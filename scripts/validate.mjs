@@ -47,27 +47,52 @@ assert(
     && mcp.mcpServers.dia.url === "https://dia.sdweb.workers.dev/mcp",
   "dia MCP must use the production HTTPS endpoint",
 );
+/**
+ * The skill points at dia's vocabulary; it does not restate it.
+ *
+ * This file used to assert the opposite — that SKILL.md still explained `validate_tsx` and the
+ * Problem/Finding/Site contract — and so it held the plugin to a dia that no longer exists: those
+ * tools were renamed to `check_*`, that vocabulary became `errors`/`warnings` and
+ * `ErrorDiagnostic`/`WarningDiagnostic`, and the guard kept the stale text in place. A copy of a
+ * contract is a copy that drifts, and a check on the copy drifts with it. So the assertions are
+ * inverted: what must be present is the way to *reach* the reference, and what must be absent is
+ * any word dia has since dropped.
+ */
 assert(
-  skill.includes("validate_tsx") && skill.includes("render_tsx") && skill.includes("lint_tsx"),
-  "SKILL.md must explain the portable Remote TSX validate, render, and lint workflow",
+  skill.includes("diagram://reference/") && skill.includes("diagram://diagnostics/"),
+  "SKILL.md must send the agent to dia's served reference and diagnostics rather than restate them",
 );
 assert(
-  skill.includes("problems") && skill.includes("findings") && skill.includes("sites"),
-  "SKILL.md must explain the current Problem, Finding, and Site contract",
+  skill.includes("resources/list") && skill.includes("tools/list"),
+  "SKILL.md must tell the agent to discover what this deployment actually serves",
 );
 assert(
-  skill.includes("plain `{ entities, relations }` data"),
-  "SKILL.md must explain that the current Model authoring surface is plain data",
+  skill.includes("ErrorDiagnostic") && skill.includes("WarningDiagnostic")
+    && skill.includes("fixIts") && skill.includes("primary"),
+  "SKILL.md must state the current diagnostic contract",
 );
-for (const removed of ["defineComponent", "idScope", "ReplicaSet", "dia up", "@rakudeji/dia@next"]) {
-  assert(!skill.includes(removed), `SKILL.md still names removed or superseded workflow '${removed}'`);
+/**
+ * Words dia no longer emits, or never did. `validate_*` are the pre-rename tool names, `problems` /
+ * `findings` / `sites` the pre-rename diagnostic vocabulary, and `dia validate` a command the CLI
+ * does not have — its command list is init|add|list|render|check|lint|icons|documents|export|format|schema.
+ */
+for (const removed of [
+  "defineComponent", "idScope", "ReplicaSet", "dia up", "@rakudeji/dia@next",
+  "validate_tsx", "validate_diagram", "dia validate", "problems", "findings", "sites",
+]) {
+  assert(!skill.includes(removed), `SKILL.md still names removed or superseded vocabulary '${removed}'`);
+}
+/** The reference is served, so shipping a copy of it is the drift this plugin exists to avoid. */
+for (const copied of ["cli.md", "tsx-authoring.md", "remote-mcp.md"]) {
+  let present = true;
+  try {
+    await access(resolve(root, `plugins/dia/skills/dia/references/${copied}`));
+  } catch {
+    present = false;
+  }
+  assert(!present, `plugins/dia/skills/dia/references/${copied} restates what dia serves; delete it`);
 }
 
-await Promise.all([
-  access(resolve(root, "plugins/dia/skills/dia/references/cli.md")),
-  access(resolve(root, "plugins/dia/skills/dia/references/tsx-authoring.md")),
-  access(resolve(root, "plugins/dia/skills/dia/references/remote-mcp.md")),
-  access(resolve(root, "plugins/dia/LICENSE")),
-]);
+await access(resolve(root, "plugins/dia/LICENSE"));
 
 console.log(`dia plugin ${codexManifest.version} is structurally valid`);

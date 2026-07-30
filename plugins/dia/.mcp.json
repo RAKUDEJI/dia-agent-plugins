@@ -3,7 +3,7 @@
     "dia": {
       "type": "http",
       "url": "https://dia.sdweb.workers.dev/mcp",
-      "note": "Official stateless dia MCP. Provides deterministic JSON diagram tools plus isolated portable TSX validation, rendering, and visual lint. Results separate pipeline-stopping Problems from non-blocking Findings. Remote TSX cannot access arbitrary npm packages, Node.js, Vite configuration, local files, secrets, or outbound network."
+      "note": "Official stateless dia MCP. Deterministic JSON diagram tools plus isolated portable TSX checking, rendering, and visual lint. Results separate pipeline-stopping errors from non-blocking warnings, and every diagnostic code is readable as a diagram://diagnostics/{code} resource. Remote TSX reaches no arbitrary npm package, Node.js, Vite configuration, local file, secret, or outbound network."
     }
   }
 }
